@@ -45,7 +45,7 @@ def run_case(id,x):
     
     # modify runwrf.sh
     logger.info("case"+str(id)+": modifiy runwrf.sh")
-    os.system("sed -i 's/runwrf/case0/g' runwrf.sh")
+    os.system("sed -i 's/runwrf/case"+str(id)+"/g' runwrf.sh")
     
     # modify namelist
     logger.info("case"+str(id)+": modifiy namelist")
@@ -55,11 +55,11 @@ def run_case(id,x):
     
     # run model
     logger.info("case"+str(id)+": run model")
-    time.sleep(30)
-    #jid = os.popen("qsub runwrf.sh").read().split('.')[0]
+    #time.sleep(30)
+    jid = os.popen("qsub runwrf.sh").read().split('.')[0]
     #print(jid)
-    #while os.popen("qstat").read().find(jid) != -1:
-    #    time.sleep(300)
+    while os.popen("qstat").read().find(jid) != -1:
+        time.sleep(300)
         
     #archive case
     logger.info("case"+str(id)+": archive case")
@@ -73,11 +73,9 @@ def run_case(id,x):
 def run_case_wrapper(args):
     return run_case(*args)
 
-pool = mp.Pool(10)
-pool.map(run_case_wrapper,para_samples[:10])
+pool = mp.Pool(30)
+pool.map(run_case_wrapper,para_samples)
 
-
-# In[ ]:
 
 
 
