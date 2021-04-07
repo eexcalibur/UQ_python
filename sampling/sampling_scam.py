@@ -9,15 +9,17 @@ from loguru import logger
 import multiprocessing as mp
 
 para_limits = np.array([
-    [2.95e-3, 8.85e-3],
+    [2.95e-3, 8.85e-3]
+    #[8.0e-1, 9.5e-1]
 ]
 )
 
-num = 100
+num = 1000
 
 base_path="/home/tzhang/scam_causal/SCAM_cesm/cesm1_2_2/SCMtest/run/"
-archive_path = "/S2/gscr2/tzhang/big_data/UQ/scam_sampling/"
+archive_path = "/S2/gscr2/tzhang/big_data/UQ/scam_sampling/1p"
 para_names = ['zmconv_c0_lnd']
+#para_names = ['zmconv_c0_lnd','cldfrc_rhminl']
 
 sampling = LHS(xlimits=para_limits)
 x = sampling(num)
@@ -41,7 +43,8 @@ def run_case(id,x):
     
     # modify namelist
     for key in x:
-        replace_str = "sed -i '/^ "+key+"/c\ "+key+"="+str(x[key])+"' atm_in"
+        #replace_str = "sed -i '/^ "+key+"/c\ "+key+"="+str(x[key])+"' atm_in"
+        replace_str = "sed -i '/\<"+key+"\>/c\ "+key+"="+str(x[key])+"' atm_in"
         os.system(replace_str)
     
     # run model
